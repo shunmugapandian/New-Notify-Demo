@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <!--
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather PWA</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Verizon">
+  <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+  <meta name="msapplication-TileImage" content="images/icons/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#2F3BA2">
+  <style>
+    .header,body{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;-webkit-box-direction:normal}*,.card,.loader #spinner{box-sizing:border-box}body,html{padding:0;margin:0;height:100%;width:100%;font-family:Helvetica,Verdana,sans-serif;font-weight:400;font-display:optional;color:#444;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}html{overflow:hidden}body{display:flex;-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;-webkit-flex-wrap:nowrap;-ms-flex-wrap:nowrap;flex-wrap:nowrap;-webkit-box-pack:start;-webkit-justify-content:flex-start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-align:stretch;-webkit-align-items:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-align-content:stretch;-ms-flex-line-pack:stretch;align-content:stretch;background:#ececec}.header{width:100%;height:56px;color:#FFF;background:#3F51B5;position:fixed;font-size:20px;box-shadow:0 4px 5px 0 rgba(0,0,0,.14),0 2px 9px 1px rgba(0,0,0,.12),0 4px 2px -2px rgba(0,0,0,.2);padding:16px 16px 0;will-change:transform;display:flex;-webkit-box-orient:horizontal;-webkit-flex-direction:row;-ms-flex-direction:row;flex-direction:row;-webkit-flex-wrap:nowrap;-ms-flex-wrap:nowrap;flex-wrap:nowrap;-webkit-box-pack:start;-webkit-justify-content:flex-start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-align:stretch;-webkit-align-items:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-align-content:center;-ms-flex-line-pack:center;align-content:center;-webkit-transition:-webkit-transform 233ms cubic-bezier(0,0,.21,1) .1s;transition:-webkit-transform 233ms cubic-bezier(0,0,.21,1) .1s;transition:transform 233ms cubic-bezier(0,0,.21,1) .1s;transition:transform 233ms cubic-bezier(0,0,.21,1) .1s,-webkit-transform 233ms cubic-bezier(0,0,.21,1) .1s}.header .headerButton{width:24px;height:24px;margin-right:16px;text-indent:-30000px;overflow:hidden;opacity:.54;-webkit-transition:opacity 333ms cubic-bezier(0,0,.21,1);transition:opacity 333ms cubic-bezier(0,0,.21,1);border:none;outline:0}.card,.dialog{border-radius:2px}.header #butRefresh{background:url(images/ic_refresh_white_24px.svg) center center no-repeat}.header #butAdd{background:url(images/ic_add_white_24px.svg) center center no-repeat}.header__title{font-weight:400;font-size:20px;margin:0;-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1}.loader{left:50%;top:50%;position:fixed;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.loader #spinner{stroke:#673AB7;stroke-width:3px;-webkit-transform-origin:50%;transform-origin:50%;-webkit-animation:line 1.6s cubic-bezier(.4,0,.2,1) infinite,rotate 1.6s linear infinite;animation:line 1.6s cubic-bezier(.4,0,.2,1) infinite,rotate 1.6s linear infinite}@-webkit-keyframes rotate{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(450deg);transform:rotate(450deg)}}@keyframes rotate{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(450deg);transform:rotate(450deg)}}@-webkit-keyframes line{0%{stroke-dasharray:2,85.964;-webkit-transform:rotate(0);transform:rotate(0)}50%{stroke-dasharray:65.973,21.9911;stroke-dashoffset:0}100%{stroke-dasharray:2,85.964;stroke-dashoffset:-65.973;-webkit-transform:rotate(90deg);transform:rotate(90deg)}}@keyframes line{0%{stroke-dasharray:2,85.964;-webkit-transform:rotate(0);transform:rotate(0)}50%{stroke-dasharray:65.973,21.9911;stroke-dashoffset:0}100%{stroke-dasharray:2,85.964;stroke-dashoffset:-65.973;-webkit-transform:rotate(90deg);transform:rotate(90deg)}}.main{padding-top:60px;-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}.dialog-container{background:rgba(0,0,0,.57);position:fixed;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;will-change:opacity;-webkit-transition:opacity 333ms cubic-bezier(0,0,.21,1);transition:opacity 333ms cubic-bezier(0,0,.21,1)}.dialog-container--visible{opacity:1;pointer-events:auto}.dialog{background:#FFF;box-shadow:0 0 14px rgba(0,0,0,.24),0 14px 28px rgba(0,0,0,.48);min-width:280px;position:absolute;left:50%;top:50%;-webkit-transform:translate(-50%,-50%) translateY(30px);transform:translate(-50%,-50%) translateY(30px);-webkit-transition:-webkit-transform 333ms cubic-bezier(0,0,.21,1) 50ms;transition:-webkit-transform 333ms cubic-bezier(0,0,.21,1) 50ms;transition:transform 333ms cubic-bezier(0,0,.21,1) 50ms;transition:transform 333ms cubic-bezier(0,0,.21,1) 50ms,-webkit-transform 333ms cubic-bezier(0,0,.21,1) 50ms;padding:24px}.card{padding:16px;position:relative;background:#fff;margin:16px;box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12)}.weather-forecast .location{font-size:1.75em}.weather-forecast .date,.weather-forecast .description{font-size:1.25em}.weather-forecast .current{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}.weather-forecast .current .icon{width:128px;height:128px}.weather-forecast .current .visual{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;font-size:4em}.weather-forecast .current .visual .scale{font-size:.5em;vertical-align:super}.weather-forecast .current .description,.weather-forecast .current .visual{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1}.weather-forecast .current .feels-like:before{content:"Feels like: ";color:#888}.weather-forecast .current .wind:before{content:"Wind: ";color:#888}.weather-forecast .current .precip:before{content:"Precipitation: ";color:#888}.weather-forecast .current .humidity:before{content:"Humidity: ";color:#888}.weather-forecast .current .pollen:before{content:"Pollen Count: ";color:#888}.weather-forecast .current .pcount:before{content:"Pollen ";color:#888}.weather-forecast .future{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}.weather-forecast .future .oneday{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1;text-align:center}.weather-forecast .future .oneday .icon{width:64px;height:64px;margin-left:auto;margin-right:auto}.weather-forecast .future .oneday .temp-high,.weather-forecast .future .oneday .temp-low{display:inline-block}.weather-forecast .future .oneday .temp-low{color:#888}.weather-forecast .icon{background-repeat:no-repeat;background-size:contain}.weather-forecast .icon.clear-day,.weather-forecast .icon.clear-night{background-image:url(images/clear.png)}.weather-forecast .icon.rain{background-image:url(images/rain.png)}.weather-forecast .icon.snow{background-image:url(images/snow.png)}.weather-forecast .icon.sleet{background-image:url(images/sleet.png)}.weather-forecast .icon.wind{background-image:url(images/wind.png)}.weather-forecast .icon.fog{background-image:url(images/fog.png)}.weather-forecast .icon.cloudy{background-image:url(images/cloudy.png)}.weather-forecast .icon.partly-cloudy-day,.weather-forecast .icon.partly-cloudy-night{background-image:url(images/partly-cloudy.png)}.weather-forecast .icon.thunderstorms{background-image:url(images/thunderstorms.png)}@media (max-width:450px){.weather-forecast .date,.weather-forecast .description{font-size:.9em}.weather-forecast .current .icon{width:96px;height:96px}.weather-forecast .current .visual{font-size:3em}.weather-forecast .future .oneday .icon{width:32px;height:32px}}
+  </style>  
+  
+  
+  -->
+  
+   <title>Cell Phones, Smartphones &amp;  the Largest 4G LTE Network - Verizon Wireless</title>
+    <!--  
+    ACTIVEPAGE = LANDING_AND_HOME
+    PAGEID before = MOBILE_HOME_PAGE-->
+    <meta name="description" content="Discover the latest Cell Phones, Smartphones, Prepaid Devices, Tablets, Cell Phone Plans and Accessories from Verizon Wireless. The nation's largest 4G LTE Network.">
+    <meta name="keywords" content="Verizon Wireless,Cell Phones,Mobile Phones,Cellular Phone,Cell Phone">	
+    
+    
+    
+    <meta charset="utf-8"><!-- Viewport -->
+    <meta name="viewport" content="user-scalable=0, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"> 
+    <!-- This is the block for metatags--><!-- Including Main Framework and Verizon css files -->
+ 
+			<script type="text/javascript">
+				var vzwDL = {"page":{"appointmentId":"","area":"South|Georgia","authStatus":"unauthenticated","categoryName":"","channel":"/mobile store","condition":"homepage","contentGroup":"","conversionType":"","deviceFilter":"","deviceId":"","deviceManufacturer":"","deviceModel":"","deviceType":"","deviceValue":"","email":"","errorCode":"","errorMsg":"","filter":"","flowInteraction":"navigation","flowName":"home page","flowType":"home page","globalId":"be68b5f61345447ca0311a77738f2d67","hier1":"/mobile store/prospect/home page","language":"english","lineOfBusiness":"consumer","microInteraction":"","microType":"","mlsContent":"","mlsExp":"","mlsType":"","pageName":"/mobile store/prospect/home page","pageType":"mobile store","perContentImpression":"","perEngineName":"","platform":"mobile","registrationType":"","returnType":"","rylToken":"","section2":"/mobile store/prospect","section3":"NA","selfServiceType":"","shopPath":"","sort":"","state":"GA","storeNumber":"","subFlowType":"","testVersion":"","typeIndicator":"prospect","zipCode":"30004"}};
+			</script>
+			<script type="text/javascript" src="//nexus.ensighten.com/vzw/prod/Bootstrap.js"></script>
+	
+	<!-- PAGE ID after = MOBILE_HOME_PAGE -->
+ 	<meta name="format-detection" content="telephone=no">
+	
+	<link rel="canonical" href="http://www.verizonwireless.com/">
+	
+	<!-- Added to Include ISO styles for Paid Search Landing Pages -->
+   <link rel="stylesheet" href="//scache.vzw.com/omni/m/css/global.min.cbe16b43d8.css	">
+    <link rel="stylesheet" href="https://ss7.vzw.com/is/content/VerizonWireless/2014/CSS/styles-m.css">
+	<link rel="stylesheet" href="//scache.vzw.com/omni/common/js/vendor/foresee/foresee-dhtml.cb511df0f3.css	">
+	<link rel="stylesheet" href="//scache.vzw.com/omni/common/onlineopinionv5/oo_style.cb5606e2e1.css">
+	<script src="//scache.vzw.com/omni/m/js/lib.cb7eeb06db.js"></script>
+	<script src="//scache.vzw.com/omni/m/js/slick.cb7eeb06db.js"></script>
+	<script src="//scache.vzw.com/omni/m/js/countdown.cb7eeb06db.js"></script>
+	<script src="//scache.vzw.com/omni/m/js/jquery.lwtCountdown-1.0.cb7eeb06db.js"></script>
+	<script src="//scache.vzw.com/omni/m/js/modernizr.cb7eeb06db.js"></script>
+	<script>
+		var gPageId = ("object"===typeof vzwDL && "object"===typeof vzwDL.page) ? vzwDL.page.pageName : document.title;
+		var gomez = {"gs":new Date().getTime(),"acctId":"0532A9","pgId":gPageId,"grpId":"prod_omni_mobile","wrate":"0.1"};
+		var omniRedirect = {
+			userAgent: 'MOBILE',
+			fullSiteURL: 'http://www.verizonwireless.com/b2c',
+			viewFullSite: function(fsCookie){
+				if(fsCookie){
+					document.cookie = "fs=1; domain=.verizonwireless.com; path=/";
+				}
+				location.href = omniRedirect.fullSiteURL;
+			},
+			checkViewMobileSite: function() {
+				if(/Windows Phone OS 7/gi.test(navigator.userAgent)){
+					omniRedirect.viewFullSite(true);
+				}else if(/^(?:1|true)/gi.test(omniRedirect.getParam('rvfs'))) {
+					document.cookie = "fs=; expires=Thu, 01-Jan-1970 00:00:01 GM; path=/";
+					document.cookie = "fs=; expires=Thu, 01-Jan-1970 00:00:01 GM; domain=.verizonwireless.com; path=/";
+				}
+			},
+			getParam: function(name) {
+				name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+				var inURL = window.location.search;
+				var regexS = "[\\?&]" + name + "=([^&#]*)";
+				var regex = new RegExp(regexS, "gi");
+				var results = regex.exec(inURL);
+				if (results == null) {
+					return "";
+				} else {
+					return decodeURIComponent(results[1].replace(/\+/g, " "));
+				}
+			}
+		}
+		if(omniRedirect.userAgent == "DESKTOP") {
+			omniRedirect.viewFullSite(false);
+		} else if(omniRedirect.userAgent == "MOBILE" || omniRedirect.userAgent == "TABLET") {
+			omniRedirect.checkViewMobileSite();
+		}
+	</script>
+	
+	<script src="//scache.vzw.com/scripts/gomez/gtagb.cb13606f75.js"></script>
+	
+		<script type="text/javascript" src="https://stags.bluekai.com/site/14197?ret=js"></script>
+	
+				<script type="text/javascript" src="//scache.vzw.com/omni/d/js/vendor/offermatica/mbox.cbebd77a2c.js"></script><style>.mboxDefault { visibility:hidden; }</style><script src="//cdn.tt.omtrdc.net/cdn/target.js"></script><script src="http://verizonwireless.tt.omtrdc.net/m2/verizonwireless/mbox/standard?mboxHost=www.verizonwireless.com&amp;mboxPage=1455340171170-876596&amp;screenHeight=640&amp;screenWidth=360&amp;browserWidth=360&amp;browserHeight=567&amp;browserTimeOffset=330&amp;colorDepth=24&amp;mboxSession=1455340150711-441161&amp;mboxPC=1455340150711-441161.22_10&amp;pathname=%2Fvzw%2Fhomepage%2F&amp;profile.bkCmpIDs=none&amp;profile.bkCatIDs=none&amp;mboxCount=1&amp;mboxTime=1455359971176&amp;mbox=target-global-mbox&amp;mboxId=0&amp;mboxURL=http%3A%2F%2Fwww.verizonwireless.com%2Fvzw%2Fhomepage%2F&amp;mboxReferrer=http%3A%2F%2Fwww.verizonwireless.com%2F&amp;mboxVersion=56"></script>
+				
+				<link rel="stylesheet" type="text/css" href="/omni/common/js/vendor/foresee/foresee-dhtml.css?build=6">
+  
+  
+
+</head>
+<body class="page store-locator store-locator-landing" data-inq-observer="1"><div class="tip"><div class="tip-pointer arrow-up"></div><div class="clearfix"><a class="closeButton pull-right" href="#"><i class="caret-x blue"></i></a></div><div class="tipMid"></div></div>
+    <div class="container-wrapper">
+     <!--  Omni Nav -->
+ 	 <header class="header border-bottom">
+		
+<header id="omninav" class="header">
+	         <div class="navbar clearfix">
+                	<a href="#" data-toggle="collapse" data-target=".main-nav" class="o-nav-item o-nav-more-link collapsed">
+				<span class="o-nav-more-icon" aria-hidden="true"></span>
+			</a>
+             <a href="http://www.verizonwireless.com/vzw/homepage" class="brand"><img src="//ss7.vzw.com/is/image/VerizonWireless/vzw-logo-79-60m" alt="Logo" width="79"></a>
+          <div class="right-section">
+             	<a href="http://www.verizonwireless.com/vzw/storelocator/index.jsp" class="o-nav-item o-nav-store-link" onclick="vzwSc.trackLink('mobile:global:store');">
+				<span class="o-nav-store-icon" aria-hidden="true"></span>
+				<span class="o-nav-store-text">Stores</span>
+			</a>
+              	<a href="http://www.verizonwireless.com/vzw/cart/cart.jsp" class="o-nav-item o-nav-cart-link" onclick="vzwSc.trackLink('mobile:global:shopping+cart');">
+				<span class="o-nav-cart-icon" aria-hidden="true"></span>
+				<span class="o-nav-cart-text">Cart</span>
+			</a>
+                	<a href="#" data-toggle="collapse" data-target=".search-container" class="o-nav-item o-nav-search-link collapsed" onclick="vzwSc.trackLink('mobile:global:search');">
+				<span class="o-nav-search-icon" aria-hidden="true"></span>
+				<span class="o-nav-search-text">Search</span>
+			</a>
+              </div>
+        </div>
+        <div class="search-container collapse">
+          <form action="//www.verizonwireless.com/search/vzwSearch" autocomplete="off" onsubmit="if(this.Ntt.value == '')return false;" class="search">
+            <div class="search-buttons">
+              <button type="reset" value="reset" class="btn btn-clear"></button>
+              <button type="submit" value="submit" class="btn btn-submit"></button>
+            </div>
+            <label for="search" class="hidden">Search</label>
+            <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="tt-hint" type="text" autocomplete="off" spellcheck="off" disabled="" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; background: none 0px 0px / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0);"><input type="search" id="searchText" name="Ntt" placeholder="Search" class="input-search input-block-level tt-query" autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;"><span style="position: absolute; left: -9999px; visibility: hidden; white-space: nowrap; font-family: NeueHaasGroteskDisplayMedium, Arial, Helvetica, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></span><span class="tt-dropdown-menu" style="position: absolute; top: 100%; left: 0px; z-index: 0; display: none;"></span></span><!-- Container for Search messag -->
+          </form>
+          
+        <div id="suggest-view" server="//www.verizonwireless.com/search" displaytype="mobile" style="display: none; width: 100%; position: relative; box-sizing: border-box; color: rgb(51, 51, 51); z-index: 9999; font-family: Arial, Helvetica, sans-serif; max-width: 940px; margin-left: auto; margin-right: auto; background-color: rgb(255, 255, 255);"><div style="clear: both; position: relative; top: 0px; width: 100%; z-index: 100; max-height: 600px; overflow: hidden; height: auto; background-color: rgb(255, 255, 255);"><div style="float: right; width: 100%; height: auto; overflow: hidden; padding: 10px; margin-bottom: 34px; background-color: rgb(255, 255, 255);"></div></div></div></div>
+        <nav class="main-nav collapse"><a href="#" class="back"><span class="caret-back" aria-hidden="true"></span>Back</a>
+          <ul class="menu">
+                        <li class="submenu"><a href="#">Shop</a>
+                            <ul class="menu">
+                                <li class="submenu"><a href="#">Deals</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/valentines-day/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Offers &amp; Programs:Valentine\'s Day Deals');">Valentine's Day Deals</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/devices/certified-pre-owned/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Offers &amp; Programs:Certified Pre-Owned');">Certified Pre-Owned</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/discounts" onclick="vzwSc.trackLink('Mobile:Global:Shop:Offers &amp; Programs:Employee Discounts');">Employee Discounts</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/bundles/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Offers &amp; Programs:Accessory Bundles');">Accessory Bundles</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Phones &amp; Devices</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/vzw/smartphones" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Smartphones');">Smartphones</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/basic-phones" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Basic Phones');">Basic Phones</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/tablets" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Tablets');">Tablets</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/internet-devices" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Mobile Hotspots');">Mobile Hotspots</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/home-office-solutions" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Home &amp; Office Solutions');">Home &amp; Office Solutions</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/wearable-tech/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:Wearable Tech');">Wearable Tech</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/devices/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Phones &amp; Devices:All Devices');">All Devices</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Accessories</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/accessories/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Accessories Home');">Accessories Home</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/sale/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Accessory Deals');">Accessory Deals</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/audio" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Audio');">Audio</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/batteries-and-chargers/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Batteries &amp; Chargers');">Batteries &amp; Chargers</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/bundles/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Bundles');">Bundles</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/car-and-travel/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Car &amp; Travel');">Car &amp; Travel</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/cases-and-protection" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Cases &amp; Protection');">Cases &amp; Protection</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/everyday-essentials/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Everyday Essentials');">Everyday Essentials</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/gaming-and-toys/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Gaming &amp; Toys');">Gaming &amp; Toys</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/gift-cards/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Gift Cards');">Gift Cards</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/in-the-home/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:In The Home');">In The Home</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/memory/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Memory');">Memory</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/photography/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Photography');">Photography</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/signal-boosters/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Signal Boosters');">Signal Boosters</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/sports-and-fitness" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Sports &amp; Fitness');">Sports &amp; Fitness</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/wearable-tech/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Accessories:Wearable Tech');">Wearable Tech</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Brands</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/iphone/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:Apple');">Apple</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/landingpages/droid/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:Droid');">Droid</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/devices/htc" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:HTC');">HTC</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/devices/lg" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:LG');">LG</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/devices/motorola" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:Motorola');">Motorola</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/samsung/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Brands:Samsung');">Samsung</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Plans &amp; Services</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/verizon-plan/" onclick="vzwSc.trackLink('mobile:global:shop:plans:the verizon plan');">The Verizon Plan</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/prepaid" onclick="vzwSc.trackLink('Mobile:Global:Shop:Plans:Prepaid');">Prepaid Plans</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/b2b/voice-data-plans/" onclick="vzwSc.trackLink('mobile:global:shop:plans:business plans');">Business Plans</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/international/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Plans &amp; Services:International Services');">International Services</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/data-only-plan/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Plans &amp; Services:Data Only');">Data Only</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/apps-media" onclick="vzwSc.trackLink('Mobile:Global:Shop:Plans &amp; Services:Exclusive Apps &amp; Services');">Exclusive Apps &amp; Services</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Home Services</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/vzw/browse/deviceDetails.jsp?deviceProdId=dev40490" onclick="vzwSc.trackLink('Mobile:Global:Shop:Home Services:Home Phone Connect');">Wireless Home Phone</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/accessories/signal-boosters/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Home Services:Network Extender');">Network Extender</a>
+                                          </li>
+                                        <li><a href="http://m.verizon.com/pammobile/PreSignin.aspx?from=residential" onclick="vzwSc.trackLink('Mobile:Global:Shop:Home Services:TV Internet &amp; Home Phone Bundle');">TV, Internet &amp; Home Phone Bundle</a>
+                                          </li>
+                                        <li><a href="http://m.verizon.com" onclick="vzwSc.trackLink('Mobile:Global:Shop:Home Services:FiOS');">FiOS</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Mobile Living</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Mobile Living Main');">Mobile Living Main</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/home-and-family/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Home &amp; Family');">Home &amp; Family</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/entertainment/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Entertainment');">Entertainment</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/sports-and-wellness/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Sports &amp; Wellness');">Sports &amp; Wellness</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/tech-smarts/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Tech Smarts');">Tech Smarts</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/network-and-plans/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Network &amp; Plans');">Network &amp; Plans</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/mobile-living/apps/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Mobile Living:Apps');">Apps</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li class="submenu"><a href="#">Why Verizon</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/better-matters" onclick="vzwSc.trackLink('Mobile:Global:Shop:Why Verizon:Better Matters');">Better Matters</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/rewards/" onclick="vzwSc.trackLink('Mobile:Global:Shop:Why Verizon:Smart Rewards');">Smart Rewards</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                              </ul>
+                          </li>
+                        <li class="submenu"><a href="#">Support</a>
+                            <ul class="menu">
+                                <li class="submenu"><a href="#">Verizon Support</a>
+                                    <ul class="menu">
+                                        <li><a href="http://www.verizonwireless.com/support/" onclick="vzwSc.trackLink('Mobile:Global:Support:Verizon Support:Support Overview');">Support Overview</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/support/phones-and-devices/" onclick="vzwSc.trackLink('Mobile:Global:Support:Verizon Support:Device');">Device</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/support/billing-and-payments/" onclick="vzwSc.trackLink('Mobile:Global:Support:Verizon Support:Billing &amp; Payments');">Billing &amp; Payments</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/support/plans/" onclick="vzwSc.trackLink('Mobile:Global:Support:Verizon Support:Plan, Account &amp; Profile');">Plan, Account &amp; Profile</a>
+                                          </li>
+                                        <li><a href="http://www.verizonwireless.com/support/services-and-apps/" onclick="vzwSc.trackLink('Mobile:Global:Support:Verizon Support:Services &amp; Apps');">Services &amp; Apps</a>
+                                          </li>
+                                      </ul>
+                                  </li>
+                                <li><a href="https://community.verizonwireless.com/mobile/" onclick="vzwSc.trackLink('Mobile:Global:Support:Community Forums');">Community Forums</a>
+                                  </li>
+                                <li><a href="http://www.verizonwireless.com/vzw/ordertracking/index.jsp" onclick="vzwSc.trackLink('Mobile:Global:Support:Order Status');">Order Status</a>
+                                  </li>
+                                <li><a href="http://www.verizonwireless.com/support/troubleshooting/" onclick="vzwSc.trackLink('Mobile:Global:Support:Device Troubleshooting');">Device Troubleshooting</a>
+                                  </li>
+                              </ul>
+                          </li>
+                        <li><a href="https://my.verizonwireless.com/myv/nos/index.jsp?device_name=sting" onclick="vzwSc.trackLink('Mobile:Global:My Verizon');">My Verizon <span class="sign-in">(Sign In)</span></a>
+                          </li>
+                        <li><a href="https://quickaccess.verizonwireless.com/bbportal/phone/showDeviceDGF.do" onclick="vzwSc.trackLink('Mobile:Global:Bring Your Own Device');">Bring Your Own Device</a>
+                          </li>
+                        <li><a href="http://www.verizonwireless.com/vzw/storelocator/index.jsp" onclick="vzwSc.trackLink('Mobile:Global:Store Locator');">Store Locator</a>
+                          </li>
+                        <li><a href="http://espanol.vzw.com/enes/b2c/index.html" onclick="vzwSc.trackLink('Mobile:Global:Espanol');">Español</a>
+                          </li>
+                        <li><a href="http://www.verizon.com/home/verizonglobalhome/ghp_business.aspx" onclick="vzwSc.trackLink('Mobile:Global:Business');">Business</a>
+                          </li>
+                        <li><a href="http://www.verizon.com/?lid=//global//residential" onclick="vzwSc.trackLink('Mobile:Global:Business');">Residential</a>
+                          </li>
+                        <li id="set-location-indicator" class="location"><a href="http://www.verizonwireless.com/vzw/zipwall/setLocation.jsp" class=""><span><strong>Your Location: Alpharetta, GA</strong>Change location</span></a></li>
+          </ul>
+        </nav>
+		<script type="text/javascript">
+			var vzon_msoList = {
+				comcast:{
+					linkBackTitle:'Return to Xfinity',
+					linkBackUrl:'https://www.comcast.com/wireless'
+				}
+			};
+			function vzon_checkForMSO() {
+				var c = document.cookie.split(';');
+				var mson = '';
+				var msok = 'MSO=';
+				var i;
+				for(i=0;i<c.length;++i) { 
+					var ci = c[i].trim();
+					if(ci.indexOf(msok)==0) {
+						mson = ci.substring(msok.length,ci.length);
+					}
+				}
+				
+				if(mson && mson.length > 0 && mson != 'null') {
+					mson = mson.toLowerCase();
+					
+					var on = document.getElementById('omninav');
+					var onc = on.getAttribute('class');
+					on.setAttribute('class',onc+' mso '+mson);
+					
+					var lil = document.getElementsByTagName('li');
+					for(i=0;i<lil.length;++i) {
+						var li = lil[i];
+						if(li && li.hasAttribute('data-msorestrict') && li.getAttribute('data-msorestrict') == 'true') {
+							li.parentNode.removeChild(li);
+							i--;
+						}
+					}
+					
+					if(vzon_msoList && vzon_msoList[mson]) {
+						var ull = document.getElementsByTagName('ul');
+						for(i=0;i<ull.length;++i) {
+							var ul = ull[i];
+							if(ul && ul.getAttribute('class') == 'menu' && ul.parentNode.getAttribute('class').indexOf('main-nav')>=0) {
+								var lbli = document.createElement("li");
+								var lba = document.createElement("a");
+								lba.setAttribute('href', vzon_msoList[mson].linkBackUrl);
+								lba.innerHTML = vzon_msoList[mson].linkBackTitle;
+								lbli.appendChild(lba);
+								ul.appendChild(lbli);
+								ul.appendChild(document.getElementById("set-location-indicator"));
+								break;
+							}
+						}
+					}
+				}
+			}
+			vzon_checkForMSO();
+		</script>
+
+</header>
+
+      </header> 
+     <!--  Omni Nav End -->  
+      <section class="content">
+		  
+			
+		<input type="hidden" id="showStoreSuggestion" name="showStoreSuggestion" value="Y">
+        <div class="store-locator-search">
+          <h4 class="fontSize_6 store-locator-m-title" style="text-transform:none;">Find a store</h4>
+          <form class="search store-search">
+            <label for="store-search" class="hidden"></label>
+            <input type="text" id="store-search" placeholder="Enter zip or address" class="input-block-level">
+            <div class="search-buttons">
+              <!-- <label for="reset" class="hidden"></label>
+              <input id="reset" type="reset" value="reset" class="btn btn-clear hide"/>
+              <label for="submit" class="hidden"></label>
+              <input id="submit" type="submit" value="submit" class="btn btn-submit"/> -->
+              <button type="submit" id="submit" class="vzw-button-red"><span aria-hidden="true"></span></button>
+            </div>
+			
+				<div class="tt-dropdown-menu">
+				<div class="tt-dataset-StoreSearch" style="display: block; ">
+				  <div class="searchResult clearfix">
+				  <div class="pull-left">
+					<div class="user-input">
+					  <label class="signup.big show-content store-locator-checkbox" style="font-weight:bold;font-size:12px;">
+						<div class="icheckbox" style="position: relative;"><input type="checkbox" value="authorized_retailers" class="checkbox authorized_retailers_from_search" style="position: absolute; visibility: hidden;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div>Do not include Authorized Retailers
+					  </label>
+					  
+					</div>
+				  </div>
+				</div>
+				</div>
+				</div>
+			
+          </form>
+        </div>
+        
+       	
+				<div class="mboxDefault"></div>
+				<script type="text/javascript">
+					mboxCreate("VZW_Global_StoreLocator", "loggedin=false", "pageName="
+									+ document.title, "devicetype=MOBILE", "profile.customerType=B2C");
+				</script>
+			
+		
+        <!-- Display Brand New Experience Page Content from Endeca Start -->
+		<div class="pad-big border-bottom landing" style="background-color:#f6f6f6;">
+<h2>Need immediate assistance?</h2>
+
+<ul class="immediate-assistance">
+	<li><strong><a href="/vzw/storelocator/workshop/workshop-landing.jsp">Attend a workshop</a></strong></li>
+	<li><strong><a href="https://mobile.vzw.com/mvrt">Pay your bill</a></strong></li>
+	<li><strong><a href="https://mobile.vzw.com/mvrt">Upgrade your device</a></strong></li>
+	<li><strong><a href="https://mobile.vzw.com/mvrt">Account questions</a></strong></li>
+	<li><strong><a href="//mobile.vzw.com/mvrt">Device troubleshooting</a></strong></li>
+</ul>
+</div>
+
+<div class="pad-big border-bottom landing" style="background-color:#f6f6f6; padding-bottom:25px;">
+<h2>Speak with sales.</h2>
+<a class="button primary" href="tel:18778731749" onclick="vzwSc.trackLink('Mobile:Store Locator:Call Sales');" style="text-transform:none;">Call now - (877) 873-1749</a></div>
+<!-- landing content end --><!-- store product-->
+		<!-- Display Brand New Experience Page Content from Endeca End -->
+        <!-- store product end-->
+        <div class="store-locator-search-suggest hidden">
+          <div class="cart-full-wrapper store-search-suggest clearfix">
+            <p>Did you mean to search "<span class="search-term"></span>"?</p><a href="#" class="btn btn-gray close"><span>Close</span></a><a href="#" class="btn btn-gray yes"><span>Yes</span></a>
+          </div>
+        </div>
+        <div class="store-locator-search-error hidden">
+          <div class="cart-full-wrapper store-search-error clearfix">
+            <!-- <p>We are unable to locate "<span class="search-term"></span>" Please try your search again</p><a href="#" class="btn btn-gray close"><span>Close</span></a> -->
+            <!-- CR-14807 replacing static content with CQ --> 
+				<p>We are unable to locate a store within 75 miles of your location. Please enter a new zip code and try again</p> 
+				<!-- CR-14807  --><a href="#" class="btn btn-gray close"><span>Close</span></a>
+          </div>
+        </div>
+        <div class="store-locator-confirmation hidden">
+          <div class="cart-full-wrapper store-confirmation clearfix">
+           <!-- CR-14807 replacing static content with CQ --> 
+				   <p>You have denied this site to track your location. To re-enable this feature, please change the geolocation service settings for your browser.</p> 
+				<!-- CR-14807  -->
+          </div>
+        </div>
+        <div id="store-locator-search-empty-error" class="store-locator-search-empty hidden">
+          <div class="cart-full-wrapper store-search-error clearfix">
+            <p>Please Enter a Keyword to search</p><a href="#" class="btn btn-gray close"><span>Close</span></a>
+          </div>
+        </div>
+      </section>
+    </div><!-- Footer Scripts -->
+	
+			<script src="https://maps.googleapis.com/maps/api/js?client=gme-verizonwireless2&amp;channel=vzw-mobile&amp;draggable=true"></script>
+		
+			<script src="//scache.vzw.com/omni/m/js/compressed/global.min.cb7192ca1a.js"></script>
+		
+					<script src="//scache.vzw.com/omni/m/js/compressed/storeLocator-storeLanding-workshop.min.cb9524440f.js"></script>
+				
+			<script>
+				App.pages.storeLocator.locator.imagePath = '//scache.vzw.com/omni/m/i/';
+			</script>
+		
+			<script type="text/javascript">
+				App.vars.checkoutExit = false;
+			</script>
+		
+	<script src="//scache.vzw.com/omni/m/js/pages/search.cb5fe699ff.js"></script>
+
+	
+	
+	<script>
+		App.vars.platformType = 'Mobile';
+		App.vars.transactionType = '';
+		App.vars.foreseeJsPath = "//scache.vzw.com/omni/common/js/vendor/foresee/"; 
+		App.vars.isLegacy = 'true';
+	</script>
+	
+		<script src="//scache.vzw.com/omni/common/onlineopinionv5/oo_engine.min.cb5606e2e1.js"></script>
+		
+		<script src="//scache.vzw.com/omni/common/js/vendor/onlineopinionV5.7/oo_conf.cb511df0f3.js"></script>
+		
+	<script src="//scache.vzw.com/search/staticContent/dist/js/autosuggest.js"></script>
+	
+		<script src="//scache.vzw.com/omni/common/js/vendor/foresee/foresee-trigger.cb511df0f3.js"></script>
+		<script type="text/javascript">(function($){
+			$(document).ready(function() {
+				$('#omnifooter').after('<input type="hidden" id="isForeSeeSessionFlag" value="true"/>');
+			});
+		})(jQuery);
+		</script>
+			
+	
+<div class="live-chat"> 
+  <div class="live-chat-start-btn">
+	<div class="live-chat-box-btn" style="bottom: 0px;"> <span class="bubble"> </span> <span id="liveChatText">Chat Now</span> </div>
+  </div>       
+ 
+</div>	
+
+<script src="//scache.vzw.com/omni/m/js/pages/chat.cb5fe699ff.js"></script>
+<script>
+App.vars.livePerson.Source_mobile_ind = "2";
+App.vars.livePerson.mobile_visit = "1";
+App.vars.livePerson.room = "mobile-consumer-english";
+/* SUPPORTED PAGES */
+/* LP Mobile JS Configuration */
+var appId = "44153975";
+var activePage = "STORELOCATOR";
+var n = activePage.indexOf("DISABLE_CHAT_LANDING_AND_HOME");
+if(n != -1) {
+	var _LP_CFG_ = {
+		app_id : appId,
+		options: {
+			chatDisabled : true
+		}
+	};
+}
+else{
+	var _LP_CFG_ = {
+		app_id : appId,
+		options: {
+			triggerSelector: '.live-chat-start-btn',
+			
+			onChatDisabled: function (els){
+			 $('.live-chat').addClass("liveChatDisabled");
+			 $('.live-chat').removeClass("liveChatEnabled");
+	        $('.live-chat').hide();
+	    },
+	
+	    onChatEnabled: function (els) {
+	        $('.live-chat').show();
+			$('.live-chat').removeClass("liveChatDisabled");
+	        $('.live-chat').addClass("liveChatEnabled");
+	    },
+	
+	    extras: function () {
+	        var extras = App.vars.livePerson;
+	        return extras;
+	    },
+		
+		onReady :  function(){
+			var $el = $(_LP_CFG_.options.triggerSelector); 			
+			LPMobile.on('chatInteractive', function () { 
+				$el.find('#liveChatText').text('Rejoin Chat'); // TODO: This will require further work
+				if(!$el.find('.bubble')[0]){
+					$el.append('<span class="bubble"> </span>');
+				}
+				$el.children().css('margin-left','0px');
+			});
+			LPMobile.on('chatEnd', function () { 
+				$el.find('#liveChatText').text('Chat Now'); // TODO: This will require further work 
+				if(!$el.find('.bubble')[0]){
+					$el.append('<span class="bubble"> </span>');
+				}				
+			}); 
+			LPMobile.on('chatWindowShow', function () {
+				$el.parent().hide(); 
+			});
+			LPMobile.on('chatWindowHide', function () {
+				$el.parent().show(); 
+			});
+		}
+		
+		}
+	}; // points to clone mobile site  
+}
+/* End of Configuration */   /* LP Mobile JS include */  
+(function(){var a=_LP_CFG_.lpjsid="lpjs-"+(new Date).getTime(),b=document.createElement("script"),s=document.getElementsByTagName("script")[0];b.id=a;b.type="text/javascript";b.async=true;b.src="https://d3tpuxked45kzt.cloudfront.net/lp_lib/liveperson-mobile.js";s.parentNode.insertBefore(b,s)})();  
+/* End of Include */
+</script>	
+	<footer>
+		
+
+<footer id="omnifooter">
+      <div class="social-share-module">
+        <ul class="social-list">
+                    <li class="first"><a href="http://pinterest.com/verizon/" title="Pinterest" target="_blank" onclick="OmniNav.hbLink('mobile:global:footer:pinterest');"><span class="social-icon pinterest" aria-hidden="true"></span></a></li>
+                    <li><a href="http://www.facebook.com/verizon" title="Facebook" target="_blank" onclick="OmniNav.hbLink('mobile:global:footer:facebook');"><span class="social-icon facebook" aria-hidden="true"></span></a></li>
+                    <li><a href="http://twitter.com/verizon" title="Twitter" target="_blank" onclick="OmniNav.hbLink('mobile:global:footer:twitter');"><span class="social-icon twitter" aria-hidden="true"></span></a></li>
+                    <li><a href="https://plus.google.com/102058743234715004229?prsrc=3" title="Google-Plus" target="_blank" onclick="OmniNav.hbLink('mobile:global:footer:google-plus');"><span class="social-icon google-plus" aria-hidden="true"></span></a></li>
+                    <li><a href="https://community.verizonwireless.com/mobile/" title="Forums" onclick="OmniNav.hbLink('mobile:global:footer:forums');"><span class="social-icon forums" aria-hidden="true"></span></a></li>
+                    <li class="last"><a href="https://forms.verizonwireless.com/dgf/optin/2012/08282012_general_optin/?SOURCEID=12_10_General_Optin_SFooter" title="Email" target="_blank" onclick="OmniNav.hbLink('mobile:global:footer:mail');"><span class="social-icon email" aria-hidden="true"></span></a></li>
+                  </ul>
+      </div>
+      <div class="footer-menu-block pad-big clearfix">
+        <div class="footer-menu-wrapper pull-left">
+          <ul class="footer-menu">
+                        <li><a href="http://www.verizonwireless.com/vzw/#" onclick="OmniNav.hbLink('mobile:global:footer:home');">Home</a></li>
+                        <li><a href="http://www.verizonwireless.com/vzw/storelocator/index.jsp" onclick="OmniNav.hbLink('mobile:global:footer:store+locator');">Store locator</a></li>
+                        <li><a href="http://www.verizonwireless.com/support/contact-us" onclick="OmniNav.hbLink('mobile:global:footer:contact+us');">Contact us</a></li>
+                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/customer-agreement/" onclick="OmniNav.hbLink('mobile:global:footer:customer+agreement');">Customer agreement</a></li>
+                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/return-policy/" onclick="OmniNav.hbLink('mobile:global:footer:return+policy');">Return policy</a></li>
+                        <li><a href="javascript:void(0);" onclick="OmniNav.hbLink('mobile:global:footer:feedback');OmniNav.callOnlineOpinion();">Feedback</a></li>
+                        <li><a href="http://www.verizonwireless.com/aboutus/commitment/safety-security.html" onclick="OmniNav.hbLink('mobile:global:footer:avoid+potential+hearing+loss');">Avoid potential hearing loss</a></li>
+                        <li><a href="http://www.verizonwireless.com/b2c/landingpages/lifeline.jsp" onclick="OmniNav.hbLink('mobile:global:footer:lifeline\/+link-up');">Lifeline/ link-up</a></li>
+                        <li><a href="javascript:void(0);" onclick="OmniNav.hbLink('mobile:global:footer:view+full+site');if(typeof omniRedirect !== 'undefined'){omniRedirect.viewFullSite(true)}else{location.href='https://www.verizonwireless.com/?vfs=1'}">Desktop site</a></li>
+                      </ul>
+        </div>
+        <div class="footer-menu-wrapper pull-left">
+          <ul class="footer-menu">
+                        <li><a href="http://www.verizonwireless.com/aboutus.html" onclick="OmniNav.hbLink('mobile:global:footer:about+us');">About us</a></li>
+                        <li><a href="http://www.verizon.com/about/privacy/" onclick="OmniNav.hbLink('mobile:global:footer:privacy');">Privacy</a></li>
+                        <li><a href="http://www.verizonwireless.com/vzw/landingpages/legal-notices/" onclick="OmniNav.hbLink('mobile:global:footer:legal+notices');">Legal notices</a></li>
+                        <li><a href="http://www.verizonwireless.com/aboutus/accessibility/index.html" onclick="OmniNav.hbLink('mobile:global:footer:accessibility');">Accessibility</a></li>
+                        <li><a href="http://innovation.verizon.com/" onclick="OmniNav.hbLink('mobile:global:footer:innovation+program');">Innovation program</a></li>
+                        <li><a href="http://www.verizon.com/about/responsibility" onclick="OmniNav.hbLink('mobile:global:footer:corporate+responsibility');">Corporate responsibility</a></li>
+                        <li><a href="http://www.verizon.com/jobs/" onclick="OmniNav.hbLink('mobile:global:footer:careers');">Careers</a></li>
+                        <li><a href="http://www.verizonwireless.com/support/contact-us" onclick="OmniNav.hbLink('mobile:global:footer:contact+sales');">Contact sales</a></li>
+                      </ul>
+        </div>
+      </div>
+      <div class="footer-menu-wrapper-hoz">
+        <ul class="footer-menu clearfix">
+                    <li><a href="https://www.verizonwireless.com/support/collateraldownload/" onclick="OmniNav.hbLink('mobile:global:footer:brochures');">Brochures</a></li>
+                    <li><a href="http://www.verizonwireless.com/aboutus/commitment/safety_security.html" onclick="OmniNav.hbLink('mobile:global:footer:drive+responsibly');">Drive Responsibly</a></li>
+                    <li><a href="http://www.verizonwireless.com/landingpages/device-trade-in/" onclick="OmniNav.hbLink('mobile:global:footer:device+trade-in+program');">Device Trade-In Program</a></li>
+                    <li><a href="http://www.verizonwireless.com/aboutus/commitment/community_programs/hopeline/index.html" onclick="OmniNav.hbLink('mobile:global:footer:hopeline');">HopeLine</a></li>
+                    <li><a href="http://www.verizonwireless.com/aboutus/commitment/safety-security.html" onclick="OmniNav.hbLink('mobile:global:footer:important+wireless+issues');">Important Wireless Issues</a></li>
+                    <li><a href="http://www.verizonwireless.com/aboutus/commitment/safety-security.html" onclick="OmniNav.hbLink('mobile:global:footer:radio+frequency+emissions');">Radio Frequency Emissions</a></li>
+                    <li><a href="http://www.verizonwireless.com/vzw/landingpages/my-verizon-agreement-mobile" onclick="OmniNav.hbLink('mobile:global:footer:my+verizon+terms+conditions');">My Verizon Terms &amp; Conditions</a></li>
+                    <li><a href="http://s7.vzw.com/is/content/VerizonWireless/Footer/device-payment-t-c.pdf" onclick="OmniNav.hbLink('mobile:global:footer:device+payment+terms+conditions');">Device Payment Terms &amp; Conditions</a></li>
+                    <li><a href="http://www.verizonwireless.com/vzw/landingpages/website-usage/" onclick="OmniNav.hbLink('mobile:global:footer:website+use');">Website Use</a></li>
+                  </ul>
+      </div>
+      <div class="copy-right pad-big">
+        <ul class="clearfix">
+                    <li><a href="http://www.verizonwireless.com/vzw" onclick="OmniNav.hbLink('mobile:global:footer:+2016+verizon+wireless');">© 2016 Verizon Wireless</a></li>
+                  </ul>
+      </div>
+	
+</footer><input type="hidden" id="isForeSeeSessionFlag" value="true">
+
+	</footer>
+	
+<!-- Page ID:  -->
+
+<script src="//scache.vzw.com/omni/common/js/sc_customdefunct.cb28c24b81.js"></script>
+
+<script>var hiddenJson = null;
+	
+	var siteCatalyst=setClickThroughIds=clearEdgeVariables=getOriginalPageName=invokeSubmitDataAsync=getJSONDataForPageId=function(a,b,c,d,e){};
+</script>
+
+	<iframe name="__bkframe" style="display:none;" height="0" width="0" frameborder="0" src="//scache.vzw.com/scripts/globalnav/blank.html"></iframe>
+			
+  
+
+</body>
+</html>
