@@ -68,13 +68,12 @@ function subscribe() {
   then(function(pushSubscription){
     sub = pushSubscription;
     console.log('Subscribed! Endpoint:', sub.endpoint);
-    subscribeButton.textContent = 'Successfully Subscribed!';
     isSubscribed = true;
-	subscribeButton.textContent = 'Successfully Subscribed!';
 	var endPoints = sub.endpoint.split('/');
 	var regID = endPoints[endPoints.length - 1];
 	//document.getElementById("regid").innerText = regID;
 	subscribeButton.textContent = 'Successfully Subscribed!';
+	subscribeButton.style="background-position:0px -82px;";
   });
 }
 function unsubscribe() {
